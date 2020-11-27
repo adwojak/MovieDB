@@ -27,7 +27,7 @@ SECRET_KEY = 'hzt^1b-g91cbp3@97uf-$d#(-pe6)b@(51p_7ijd2d#8r+vu@#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'https://salty-wildwood-96254.herokuapp.com/']
 
 
 # Application definition

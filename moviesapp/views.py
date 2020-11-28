@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
+from moviesapp.serializers import RegisterSerializer
 
-# Create your views here.
+
+class RegisterViewSet(GenericViewSet, CreateModelMixin, UpdateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer

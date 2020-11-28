@@ -7,9 +7,6 @@ from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
 from libs.response import SuccessResponse
 from moviesapp.serializers import RegisterSerializer
 
-from rest_framework.response import Response
-from moviesapp.omdbapi import fetch_omdbapi
-
 
 class RegisterViewSet(GenericViewSet, CreateModelMixin, UpdateModelMixin):
     queryset = User.objects.all()
@@ -21,5 +18,4 @@ class DeleteUserView(GenericAPIView):
 
     def delete(self, request):
         request.user.delete()
-        return Response(fetch_omdbapi('Matrix'))
-        # return SuccessResponse('User deleted', status=HTTP_204_NO_CONTENT)
+        return SuccessResponse('User deleted', status=HTTP_204_NO_CONTENT)

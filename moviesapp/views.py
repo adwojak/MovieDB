@@ -4,16 +4,19 @@ from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
+from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, ListModelMixin
 from libs.response import SuccessResponse
 from libs.mixins import InputCreateModelMixin
 from moviesapp.omdbapi import fetch_omdbapi
 from moviesapp.serializers import RegisterSerializer
 from moviesapp.models import (
+    CommentModel,
     MovieModel,
     RatingModel,
 )
 from moviesapp.serializers import (
+    CommentFilterSerializer,
+    CommentSerializer,
     MoviesSerializer,
     InputMoviesSerializer,
     RatingsSerializer,
@@ -58,3 +61,18 @@ class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return SuccessResponse('Movie deleted', status=HTTP_204_NO_CONTENT)
+
+
+class CommentsViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
+    queryset = CommentModel.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = super(CommentsViewSet, self).get_queryset()
+        request_data = self.request.data
+        serializer = CommentFilterSerializer(data=request_data)
+        serializer.is_valid()
+        movie_id = serializer.validated_data.get('movie_id')
+        if movie_id:
+            return queryset.filter(movie_id=movie_id)
+        return queryset

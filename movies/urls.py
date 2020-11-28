@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from moviesapp.views import (
+    CommentsViewSet,
     DeleteUserView,
     RatingsViewSet,
     RegisterViewSet,
@@ -13,6 +14,7 @@ router = DefaultRouter()
 router.register(r'register', RegisterViewSet, basename='register')
 router.register(r'ratings', RatingsViewSet)
 router.register(r'movies', MoviesViewSet)
+router.register(r'comments', CommentsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,13 +1,17 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import (
     CharField,
+    IntegerField,
     Serializer,
     HyperlinkedModelSerializer,
 )
 from moviesapp.models import (
+    CommentModel,
     RatingModel,
     MovieModel,
 )
+from libs.exceptions import MovieDoesNotExist
+from libs.errors import MOVIE_DOES_NOT_EXIST
 
 
 class RegisterSerializer(HyperlinkedModelSerializer):
@@ -66,3 +70,21 @@ class MoviesSerializer(HyperlinkedModelSerializer):
 
 class InputMoviesSerializer(Serializer):
     title = CharField(max_length=100)
+
+
+class CommentFilterSerializer(Serializer):
+    movie_id = IntegerField(required=False)
+
+
+class CommentSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = CommentModel
+        fields = ['movie_id', 'comment']
+
+    def create(self, validated_data):
+        movie_id = validated_data['movie_id']
+        try:
+            MovieModel.objects.get(id=movie_id)
+        except MovieModel.DoesNotExist:
+            raise MovieDoesNotExist(MOVIE_DOES_NOT_EXIST.format(movie_id))
+        return self.Meta.model.objects.create(**validated_data)

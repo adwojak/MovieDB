@@ -1,8 +1,11 @@
+from django.utils.timezone import now
 from django.db.models import (
     CharField,
+    DateTimeField,
     IntegerField,
     ManyToManyField,
     Model,
+    TextField,
 )
 
 
@@ -29,7 +32,7 @@ class MovieModel(Model):
     country = CharField(max_length=200, blank=True)
     awards = CharField(max_length=200, blank=True)
     poster = CharField(max_length=300, blank=True)
-    ratings = ManyToManyField(RatingModel)
+    ratings = ManyToManyField(RatingModel, blank=True)
     metascore = CharField(max_length=10, blank=True)
     imdb_rating = CharField(max_length=10, blank=True)
     imdb_votes = CharField(max_length=20)
@@ -39,6 +42,15 @@ class MovieModel(Model):
     dvd = CharField(max_length=20, blank=True)
     production = CharField(max_length=300, blank=True)
     website = CharField(max_length=300, blank=True)
+
+    def __repr__(self):
+        return self.__class__.__name__
+
+
+class CommentModel(Model):
+    movie_id = IntegerField()
+    comment = TextField(max_length=10000)
+    post_date = DateTimeField(editable=False, default=now())
 
     def __repr__(self):
         return self.__class__.__name__

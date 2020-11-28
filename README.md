@@ -33,6 +33,6 @@ Endpoints:
 * **/comments/**
   * **GET** - Display list of comments for movies or for specific movie. Access token required. Field movie_id is optional
   * **POST** - Add comment for movie. Access token required. Fields: movie_id, comment
-* **TOP**
+* **/top/**
   * **GET** - Display top comments. Access token required. Optional fields: date_from, date_to
   

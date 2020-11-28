@@ -1,3 +1,6 @@
+from datetime import datetime
+from django.utils.timezone import now
+from django.db.models import Count
 from typing import Any
 from django.contrib.auth.models import User
 from rest_framework.status import HTTP_204_NO_CONTENT
@@ -7,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, ListModelMixin
 from libs.response import SuccessResponse
 from libs.mixins import InputCreateModelMixin
+from libs.exceptions import BadDataFormat
 from moviesapp.omdbapi import fetch_omdbapi
 from moviesapp.serializers import RegisterSerializer
 from moviesapp.models import (
@@ -20,6 +24,7 @@ from moviesapp.serializers import (
     MoviesSerializer,
     InputMoviesSerializer,
     RatingsSerializer,
+    TopMoviesSerializer,
 )
 
 
@@ -39,6 +44,7 @@ class DeleteUserView(GenericAPIView):
 class RatingsViewSet(ReadOnlyModelViewSet):
     queryset = RatingModel.objects.all()
     serializer_class = RatingsSerializer
+    # permission_classes = (IsAuthenticated,)
 
 
 class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
@@ -66,6 +72,7 @@ class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
 class CommentsViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     queryset = CommentModel.objects.all()
     serializer_class = CommentSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super(CommentsViewSet, self).get_queryset()
@@ -76,3 +83,26 @@ class CommentsViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
         if movie_id:
             return queryset.filter(movie_id=movie_id)
         return queryset
+
+
+class TopMoviesView(GenericAPIView):
+    # permission_classes = (IsAuthenticated,)
+    rank_counter = 0
+
+    def get_element(self, query_object: dict) -> dict:
+        self.rank_counter += 1
+        return {
+            'movie_id': query_object['movie_id'],
+            'total_comments': query_object['comments'],
+            'rank': self.rank_counter,
+        }
+
+    def get(self, request):
+        serializer = TopMoviesSerializer(data=request.data)
+        if not serializer.is_valid():
+            raise BadDataFormat(serializer.errors)
+        date_from = serializer.validated_data.get('date_from', datetime.min)
+        date_to = serializer.validated_data.get('date_to', now())
+        queryset = CommentModel.objects.filter(post_date__gte=date_from, post_date__lte=date_to)
+        counted_queryset = queryset.values('movie_id').annotate(comments=Count('movie_id'))
+        return SuccessResponse([self.get_element(element) for element in counted_queryset])

@@ -1,3 +1,4 @@
+from typing import Any
 from rest_framework.response import Response
 
 
@@ -10,6 +11,6 @@ class ErrorResponse(Response):
 
 class SuccessResponse(Response):
 
-    def __init__(self, message: str, *args, **kwargs):
+    def __init__(self, message: Any, *args, **kwargs):
         data = {'success': message}
         super(SuccessResponse, self).__init__(data, *args, **kwargs)

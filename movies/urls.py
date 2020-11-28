@@ -7,6 +7,7 @@ from moviesapp.views import (
     RatingsViewSet,
     RegisterViewSet,
     MoviesViewSet,
+    TopMoviesView,
 )
 
 
@@ -21,5 +22,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('delete-user/', DeleteUserView.as_view(), name='delete-user')
+    path('delete-user/', DeleteUserView.as_view(), name='delete-user'),
+    path('top/', TopMoviesView.as_view(), name='top-movies'),
 ]

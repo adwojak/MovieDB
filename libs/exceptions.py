@@ -11,6 +11,10 @@ class MovieDoesNotExist(Exception):
     pass
 
 
+class BadDataFormat(Exception):
+    pass
+
+
 def exception_handler(exception, context):
     status = HTTP_400_BAD_REQUEST
     if hasattr(exception, 'args') and len(exception.args) > 0:

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import (
     CharField,
+    DateTimeField,
     IntegerField,
     Serializer,
     HyperlinkedModelSerializer,
@@ -88,3 +89,8 @@ class CommentSerializer(HyperlinkedModelSerializer):
         except MovieModel.DoesNotExist:
             raise MovieDoesNotExist(MOVIE_DOES_NOT_EXIST.format(movie_id))
         return self.Meta.model.objects.create(**validated_data)
+
+
+class TopMoviesSerializer(Serializer):
+    date_from = DateTimeField(required=False)
+    date_to = DateTimeField(required=False)

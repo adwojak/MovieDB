@@ -1,5 +1,0 @@
-from moviesapp.models import MovieModel
-from moviesapp.omdbapi import fetch_omdbapi
-a = fetch_omdbapi('Matrix')
-a.pop('ratings')
-q = MovieModel.objects.create(**a)

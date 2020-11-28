@@ -117,3 +117,4 @@ media/
 
 .idea
 migrations/
+resetdb.sh

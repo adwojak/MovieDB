@@ -4,11 +4,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from moviesapp.views import (
     DeleteUserView,
     RegisterViewSet,
+    MoviesViewSet,
 )
 
 
 router = DefaultRouter()
 router.register(r'register', RegisterViewSet, basename='register')
+router.register(r'movies', MoviesViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

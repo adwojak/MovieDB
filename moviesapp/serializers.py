@@ -1,5 +1,13 @@
 from django.contrib.auth.models import User
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import (
+    CharField,
+    Serializer,
+    HyperlinkedModelSerializer,
+)
+from moviesapp.models import (
+    RatingModel,
+    MovieModel,
+)
 
 
 class RegisterSerializer(HyperlinkedModelSerializer):
@@ -13,3 +21,48 @@ class RegisterSerializer(HyperlinkedModelSerializer):
         instance.set_password(raw_password)
         instance.save()
         return instance
+
+
+class RatingsSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = RatingModel
+        fields = '__all__'
+
+    def create(self, validated_data):
+        try:
+            self.Meta.model.objects.get_or_create(**validated_data)[0]
+        except self.Meta.model.MultipleObjectsReturned:
+            return self.Meta.model.objects.filter(**validated_data).first()
+
+
+class MoviesSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = MovieModel
+        fields = '__all__'
+
+    ratings = RatingsSerializer(many=True)
+
+    def create(self, validated_data):
+        ratings = validated_data.pop('ratings')
+        try:
+            return self.Meta.model.objects.get(**validated_data)
+        except self.Meta.model.DoesNotExist:
+            ratings_models = RatingsSerializer(many=True).create(ratings)
+            instance = self.Meta.model.objects.create(**validated_data)
+            instance.ratings.set(ratings_models)
+            return instance
+        except self.Meta.model.MultipleObjectsReturned:
+            return self.Meta.model.objects.filter(**validated_data).first()
+
+    def update(self, instance, validated_data):
+        ratings = validated_data.pop('ratings', None)
+        [setattr(instance, attr, value) for attr, value in validated_data.items()]
+        if ratings:
+            ratings_models = RatingsSerializer(many=True, partial=True).create(ratings)
+            instance.ratings.set(ratings_models)
+        instance.save()
+        return instance
+
+
+class InputMoviesSerializer(Serializer):
+    title = CharField(max_length=100)

@@ -3,6 +3,10 @@ from libs.errors import DEFAULT_ERROR
 from libs.response import ErrorResponse
 
 
+class OmdbApiError(Exception):
+    pass
+
+
 def exception_handler(exception, context):
     status = HTTP_400_BAD_REQUEST
     if hasattr(exception, 'args') and len(exception.args) > 0:

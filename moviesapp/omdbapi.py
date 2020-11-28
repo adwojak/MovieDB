@@ -1,9 +1,11 @@
 from os import getenv
+from distutils.util import strtobool
 from requests import get as rget, ConnectionError
 from libs.constants import (
     OMDB_API_KEY,
     OMDB_API_URL,
 )
+from libs.exceptions import OmdbApiError
 from libs.errors import OMDBAPI_UNAVAILABLE
 from libs.utils import to_snake_case
 
@@ -27,8 +29,8 @@ def _remove_na(response):
 def fetch_omdbapi(title: str, remove_na: bool = True) -> dict:
     try:
         response = rget(_get_url(title)).json()
-        if not response['Response']:
-            return response['Error']
+        if not strtobool(response['Response']):
+            raise OmdbApiError(response['Error'])
         response.pop('Response')
         if remove_na:
             response = _remove_na(response)

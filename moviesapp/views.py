@@ -44,14 +44,14 @@ class DeleteUserView(GenericAPIView):
 class RatingsViewSet(ReadOnlyModelViewSet):
     queryset = RatingModel.objects.all()
     serializer_class = RatingsSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
 
 class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
     queryset = MovieModel.objects.all()
     serializer_class = MoviesSerializer
     input_serializer_class = InputMoviesSerializer
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     def create_response(self, data: dict) -> dict:
         return fetch_omdbapi(data['title'])
@@ -72,7 +72,7 @@ class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
 class CommentsViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     queryset = CommentModel.objects.all()
     serializer_class = CommentSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super(CommentsViewSet, self).get_queryset()
@@ -86,7 +86,7 @@ class CommentsViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
 
 
 class TopMoviesView(GenericAPIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     rank_counter = 0
 
     def get_element(self, query_object: dict) -> dict:

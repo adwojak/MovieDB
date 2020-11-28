@@ -15,8 +15,7 @@ keys_for_manual_override = {
 
 
 def _get_url(title: str) -> str:
-    # return f'{OMDB_API_URL}?t={title}&apikey={getenv(OMDB_API_KEY)}'
-    return f'{OMDB_API_URL}?t={title}&apikey=b67f9256'
+    return f'{OMDB_API_URL}?t={title}&apikey={getenv(OMDB_API_KEY)}'
 
 
 def _remove_na(response):

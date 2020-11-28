@@ -30,7 +30,7 @@ class RatingsSerializer(HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         try:
-            self.Meta.model.objects.get_or_create(**validated_data)[0]
+            return self.Meta.model.objects.get_or_create(**validated_data)[0]
         except self.Meta.model.MultipleObjectsReturned:
             return self.Meta.model.objects.filter(**validated_data).first()
 

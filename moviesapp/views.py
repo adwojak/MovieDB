@@ -1,7 +1,7 @@
 from typing import Any
 from django.contrib.auth.models import User
 from rest_framework.status import HTTP_204_NO_CONTENT
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import UpdateModelMixin, CreateModelMixin
@@ -10,11 +10,13 @@ from libs.mixins import InputCreateModelMixin
 from moviesapp.omdbapi import fetch_omdbapi
 from moviesapp.serializers import RegisterSerializer
 from moviesapp.models import (
-    MovieModel
+    MovieModel,
+    RatingModel,
 )
 from moviesapp.serializers import (
     MoviesSerializer,
     InputMoviesSerializer,
+    RatingsSerializer,
 )
 
 
@@ -29,6 +31,11 @@ class DeleteUserView(GenericAPIView):
     def delete(self, request):
         request.user.delete()
         return SuccessResponse('User deleted', status=HTTP_204_NO_CONTENT)
+
+
+class RatingsViewSet(ReadOnlyModelViewSet):
+    queryset = RatingModel.objects.all()
+    serializer_class = RatingsSerializer
 
 
 class MoviesViewSet(InputCreateModelMixin, ModelViewSet):

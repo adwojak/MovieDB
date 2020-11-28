@@ -29,7 +29,7 @@ class MovieModel(Model):
     country = CharField(max_length=200, blank=True)
     awards = CharField(max_length=200, blank=True)
     poster = CharField(max_length=300, blank=True)
-    ratings = ManyToManyField(RatingModel, blank=True)
+    ratings = ManyToManyField(RatingModel)
     metascore = CharField(max_length=10, blank=True)
     imdb_rating = CharField(max_length=10, blank=True)
     imdb_votes = CharField(max_length=20)

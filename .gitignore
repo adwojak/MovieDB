@@ -118,3 +118,4 @@ media/
 .idea
 migrations/
 resetdb.sh
+libs/a.json

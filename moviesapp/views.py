@@ -35,11 +35,10 @@ class MoviesViewSet(InputCreateModelMixin, ModelViewSet):
     queryset = MovieModel.objects.all()
     serializer_class = MoviesSerializer
     input_serializer_class = InputMoviesSerializer
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
 
     def create_response(self, data: dict) -> dict:
-
-        return fetch_omdbapi('Matrix')
+        return fetch_omdbapi(data['title'])
 
     def get_serializer(self, *args: Any, **kwargs: Any):
         method = self.request.method
